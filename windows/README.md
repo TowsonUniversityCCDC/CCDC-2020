@@ -1,4 +1,4 @@
-# Windows stuff
+# Windows stuff - PvJ Shadaloo
 
 TODO:
 * enable process auditing -- event log 4688
