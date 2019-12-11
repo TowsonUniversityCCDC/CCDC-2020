@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#Script to scan a target IP space.  You could replace the target string with an -iL and use a file 
+#first does a quick ping scan of the network to identify what hosts are up
+#then will a more in depth scan based on the options variable
+#each of the indepth scans will be ndiff against eachother
+#The results of the first in depth scan will be displayed
+#After that only the results of the ndiff will be displayed in the termai
+#There will be an incrementing count to show the scan number in progress
+
+#nmap -oX <filespec> (XML output) 
+#ndiff [ <options> ] { <a.xml> } { <b.xml> }
+
+#scan  for the IPs/Assets
+#-iL calls an input file 
+targets="192.168.1.1/24"
+
+
+#-sS (TCP SYN scan) -sU (UDP scans) 
+options="-sS -sU"
+
+#set scan serial numbers
+i=0
+h=-1
+
+
+nmap -sn "$targets" | grep "report for" | cut -d " " -f 5 > scans/ips
+
+#nmap scan the file 1st run
+#output goes to standard stdout
+nmap "$options" -iL scans/ips -oX "scans/nmap_scan$i"
+
+#Loop
+while :
+do
+	#increment the scan serial number
+	((i=i+1))
+	((h=h+1))
+
+	echo -ne "\rScan Number $h"
+	nmap -sn "$targets" | grep "report for" | cut -d " " -f 5 > scans/ips
+
+	#nmap scan the file
+	#output supressed so only changes are shown
+	nmap "$options" -iL scans/ips -oX "scans/nmap_scan$i" &> /dev/null
+	
+	#ndiff the last two scans
+	ndiff scans/nmap_scan$h scans/nmap_scan$i
+
+done
