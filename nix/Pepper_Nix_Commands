@@ -1,0 +1,68 @@
+Nix Hardening Script and command order
+
+Log in
+SecureCopy 
+change-root-password.sh  change-user-passwords-add-ssh-keys.sh  ssh-config-replace.sh
+Run all three
+Open another terminal and SSH in as shadaloo
+If that doesn’t work then fix it
+
+
+Secure copy
+Use -r for directory recursive
+To move to host
+scp file host:path
+
+To copy a file from the remote host, use:
+scp host:file path
+
+
+Running Commands on a Remote Linux / UNIX Host
+ssh [USER-NAME]@[REMOTE-HOST] [command or script]
+
+SSH
+SSH Configuration Test
+After editing the configuration file you should test that it is valid before reloading the service.
+
+sshd -t
+
+Reload the Configuration File
+Once you think your edits are good, reload the SSH daemon.
+
+sudo systemctl reload sshd
+
+NMap
+Show only the IPs that have a specified port open
+--open 
+
+
+RDP
+xfreerdp /u:username /v:IPAddress:Port
+rdesktop IPAddress
+
+Other
+Processes 
+ps -aux
+
+Log directory
+/var/logs
+
+Ls open files
+lsof
+
+Cron
+List cronjobs 
+crontab -l
+
+Cron
+cat /etc/crontab
+ls /etc/cron.*
+
+Logins
+Last
+
+Apps
+Lynis
+Tiger (apt-get install tiger)
+http://www.nongnu.org/tiger/
+Chkrootkit

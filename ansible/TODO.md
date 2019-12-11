@@ -1,0 +1,26 @@
+# TODO
+
+- Setup `inventory` with mock servers (see next bullet)
+- Build out an environment test suite using Docker images for various distros/arches/applications; ideas:
+  - [Ubuntu](https://hub.docker.com/_/ubuntu)
+  - [MySQL Enterprise Server](https://hub.docker.com/_/mysql-enterprise-server)
+  - [Oracle Weblogic Server 12C](https://hub.docker.com/_/oracle-weblogic-server-12c)
+  - [Postgres](https://hub.docker.com/_/postgres)
+  - [Node](https://hub.docker.com/_/node)
+  - [MySQL](https://hub.docker.com/_/mysql)
+  - [BusyBox](https://hub.docker.com/_/busybox)
+  - [Nginx](https://hub.docker.com/_/nginx)
+  - [HTTPD](https://hub.docker.com/_/httpd)
+  - [Centos](https://hub.docker.com/_/centos)
+  - [Debian](https://hub.docker.com/_/debian)
+  - [Maven](https://hub.docker.com/_/maven)
+  - [PHP](https://hub.docker.com/_/php)
+  - [Tomcat](https://hub.docker.com/_/tomcat)
+- Get test suite automated, if not in CI
+- Try out the following roles:
+  - `dev-sec.ansible-apache-hardening`: https://galaxy.ansible.com/dev-sec/ansible-apache-hardening
+  - `dev-sec.mysql-hardening`: https://galaxy.ansible.com/dev-sec/mysql-hardening
+  - `dev-sec.nginx-hardening`: https://galaxy.ansible.com/dev-sec/nginx-hardening
+  - `geerlingguy.clamav`: https://galaxy.ansible.com/geerlingguy
+- Figure out something to mitigate cron nuisances
+- Automatically add SSH keys, set no-password-auth, etc. (`dev-sec.ssh-hardening`)

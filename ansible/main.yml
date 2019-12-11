@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+
+  roles:
+    - role: dev-sec.os-hardening
+      tags: ['hardening', 'os']
+
+    - role: dev-sec.ssh-hardening
+      tags: ['hardening', 'ssh']
